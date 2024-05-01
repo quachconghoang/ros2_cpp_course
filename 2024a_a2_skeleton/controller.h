@@ -8,10 +8,42 @@
 
 class Controller: public ControllerInterface
 {
-  //Default constructors should set all attributes to a default value
-  Controller();
+public:
+//Default constructors should set all attributes to a default value
+    Controller();
 
-  //See controllerinterface.h for more information
+    // Inherited from ControllerInterface
+    // Please Add Doxygen comments to these functions
+    void run(void);
+
+    pfms::PlatformStatus status(void);
+
+    bool setGoals(std::vector<pfms::geometry_msgs::Point> goals);
+
+    bool checkOriginToDestination(pfms::nav_msgs::Odometry origin,
+                                   pfms::geometry_msgs::Point goal,
+                                   double& distance,
+                                   double& time,
+                                   pfms::nav_msgs::Odometry& estimatedGoalPose);
+
+    pfms::PlatformType getPlatformType(void);
+
+    double distanceToGoal(void);
+
+    double timeToGoal(void);
+
+    bool setTolerance(double tolerance);
+
+    double distanceTravelled(void);
+
+    double timeTravelled(void);
+
+    pfms::nav_msgs::Odometry getOdometry(void);
+
+    std::vector<pfms::geometry_msgs::Point> getObstacles();
+
+protected:
+
 };
 
 #endif // CONTROLLER_H
