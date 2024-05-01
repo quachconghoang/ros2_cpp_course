@@ -1,5 +1,8 @@
 #include "controller.h"
 
+using std::cout;
+using std::endl;
+
 Controller::Controller():
         odo_{0,0,0,0,0,0},
         distance_travelled_(0),
@@ -9,43 +12,79 @@ Controller::Controller():
     pfmsConnectorPtr_ = std::make_unique<PfmsConnector>();
     goal_.time=0;
     goal_.distance=0;
+    goal_index_ = 0;
+}
+
+Controller::~Controller() {
+    pfmsConnectorPtr_.reset();
+//    running_=false;
+//    set_Goals_Thread_->join();
+    reach_Goals_Thread_->join();
+//    delete set_Goals_Thread_;
+    delete reach_Goals_Thread_;
+
 }
 
 void Controller::run(void) {
     // Implement this function
-    std::cout<<"Controller::run"<<std::endl;
-    for (auto goal : goals_queue_){
+    std::cout<<"Controller::run By thread ?!"<<std::endl;
+    reach_Goals_Thread_ = new std::thread(&Controller::reachGoalsQueue, this);
+//    reachGoalsQueue();
+}
+
+unsigned int Controller::checkGoalsProgress() {
+    // Implement this function
+    uint progress = uint(double(goal_index_*100)/goals_queue_.size());
+    if(progress == 100) {
+        std::cout << "Clear Cache" << std::endl;
+        std::unique_lock<std::mutex> lock(goals_queue_Mutex_);
+        goals_queue_.clear();
+        goal_index_ = 0;
+        lock.unlock();
+        // KILL ME
+
+    }
+
+    return progress;
+}
+
+void Controller::reachGoalsQueue() {
+    while (goal_index_ < goals_queue_.size()) {
+        auto goal = goals_queue_.at(goal_index_);
         std::cout<< "Reaching goal: " << goal.x << " " << goal.y << " " << goal.z << std::endl;
         goal_.location = goal;
-        bool reachable = true;
-//        bool reachable = calcNewGoal();
+        bool reachable = calcNewGoal();
         if(! reachable){
-            std::cout << "Goal not reachable" << std::endl;
+            goal_index_ ++;
+            cout << "This goal not reachable, skip, " << checkGoalsProgress()  << "%"  << endl;
             continue;
         }
         goal_.distance = distanceToGoal();
         goal_.time = timeToGoal();
-
         if(reachable){
-            std::cout<< "Reaching ...\n";
+            cout<< "Reaching a reachable goal ...\n";
             bool reached = reachGoal();
+            if(reached) {
+                goal_index_ ++;
+                cout<< "Goal reached, " << checkGoalsProgress() << "%" << endl;
+            }
         }
     }
 }
 
 pfms::PlatformStatus Controller::status(void) {
     // Implement this function
-    std::cout<<"Controller::status"<<std::endl;
     return pfms::PlatformStatus::IDLE;
 }
 
 bool Controller::setGoals(std::vector<pfms::geometry_msgs::Point> goals) {
     // Store in Buffer
-    goals_queue_.clear();
+    std::unique_lock<std::mutex> lock(goals_queue_Mutex_);
     for(auto points : goals){
        goals_queue_.push_back(points);
     }
-    std::cout << "Set " << goals_queue_.size() << " goals" << std::endl;
+    cout << "Add " << goals.size() << " goals, current goal size is " << goals_queue_.size() << endl;
+    lock.unlock();
     return true;
 }
 

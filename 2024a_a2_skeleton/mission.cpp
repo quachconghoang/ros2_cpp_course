@@ -1,4 +1,5 @@
 #include "mission.h"
+#include "controller.h"
 
 Mission::Mission(std::vector<ControllerInterface*> controllers) {
     controllers_ = controllers;
@@ -19,14 +20,19 @@ bool Mission::run() {
     std::cout << "Mission::Run dummy" << std::endl;
     for (auto controller : controllers_)
         controller->run();
-
+    std::cout << "CHECK THREADING" << std::endl;
     return true;
 }
 
 std::vector<unsigned int> Mission::status(void) {
-    std::cout << "Mission::status dummy" << std::endl;
-    std::vector<unsigned int> status;
-    return status;
+    std::vector<unsigned int> _status;
+    for (auto interface : controllers_)
+    {
+        // convert controller interface to controller
+        Controller * c = dynamic_cast<Controller*>(interface);
+        _status.push_back(c->checkGoalsProgress());
+    }
+    return _status;
 }
 
 void Mission::setMissionObjective(mission::Objective objective) {

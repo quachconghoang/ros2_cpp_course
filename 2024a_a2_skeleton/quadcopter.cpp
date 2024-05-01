@@ -10,13 +10,6 @@ Quadcopter::Quadcopter() {
     type_ = pfms::PlatformType::QUADCOPTER;
 }
 
-// We delete the pipes here specifically, which forces them to close before the object is terminated
-//Quadcopter::~Quadcopter(){
-//    pfmsConnectorPtr_.reset();
-//}
-
-
-
 bool Quadcopter::checkOriginToDestination(pfms::nav_msgs::Odometry origin, pfms::geometry_msgs::Point goal,
                                           double& distance, double& time,
                                           pfms::nav_msgs::Odometry& estimatedGoalPose) {
@@ -69,17 +62,17 @@ void Quadcopter::sendCmd(double turn_l_r, double move_l_r, double move_u_d, doub
 }
 
 bool Quadcopter::reachGoal(void) {
-    // this rasised the quadcoppter altertude to 1.5 m if it is below 1 m
     getOdometry();                      //checks Quadcopters current odometery information
-    if(odo_.position.z < 1){            // if the Quadcopter's current alterdude is less than 1 m...
-        while (odo_.position.z < (goal_.location.z - tolerance_))
-        {
-            getOdometry();              //checks Quadcopters odometery again to update the altiude to see if its under 1.5m..
-            sendCmd(0, 0, 0.4, 0);      // send command to the drown to accellerate 0.4 m/s in the z direction
-            std::this_thread::sleep_for(std::chrono::microseconds(50));  //delay the while loop iteration for 50 m/s to aloow the drone to respond
-        }
-
+    auto z_upBound = goal_.location.z + tolerance_;
+    auto z_lowBound = goal_.location.z - tolerance_;
+    while (odo_.position.z < z_lowBound || odo_.position.z > z_upBound)
+    {
+        getOdometry();              //checks Quadcopters odometery again to update the altiude to see if its under 1.5m..
+        if(odo_.position.z < z_lowBound)  sendCmd(0, 0, 0.4, 0);      // send command to the drown to accellerate 0.4 m/s in the z direction
+        if(odo_.position.z > z_upBound)  sendCmd(0, 0, -0.4, 0);      // send command to the drown to accellerate 0.4 m/s in the z direction
+        std::this_thread::sleep_for(std::chrono::microseconds(50));  //delay the while loop iteration for 50 m/s to aloow the drone to respond
     }
+
     sendCmd(0, 0, 0, 0);  // resetting drone speed to 0 in all directions
 
     calcNewGoal(); // account for any drift between setGoal call and now, by getting odo and angle to drive in

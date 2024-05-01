@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-//    std::cout << "Size of Ackerman goals:" << ackermanPoints.size() << std::endl;
+    std::cout << "Size of Ackerman goals:" << ackermanPoints.size() << std::endl;
     std::cout << "Size of Quadcopter goals:" << quadcopterPoints.size() << std::endl;
 
     std::vector<ControllerInterface*> controllers;
