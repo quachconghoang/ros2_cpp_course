@@ -41,9 +41,9 @@ unsigned int Controller::checkGoalsProgress() {
         goals_queue_.clear();
         goal_index_ = 0;
         lock.unlock();
-        // KILL ME
-
+        // Please do not call thead.join() here, it is a deadlock
     }
+    if(goals_queue_.size() == 0) return 100;
 
     return progress;
 }
