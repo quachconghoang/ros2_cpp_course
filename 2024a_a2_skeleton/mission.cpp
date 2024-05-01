@@ -10,7 +10,7 @@ void Mission::setGoals(std::vector<pfms::geometry_msgs::Point> goals, pfms::Plat
         if (type == platform){
             controller->setGoals(goals);
             if(platform==pfms::PlatformType::ACKERMAN) std::cout << "Setting goals for ACKERMAN" << std::endl;
-            else std::cout << "Setting goals for QUADCOPTER" << std::endl;
+            if(platform==pfms::PlatformType::QUADCOPTER) std::cout << "Setting goals for QUADCOPTER" << std::endl;
         }
     }
 }

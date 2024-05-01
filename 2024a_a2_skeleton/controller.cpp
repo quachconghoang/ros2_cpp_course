@@ -1,13 +1,36 @@
 #include "controller.h"
 
-Controller::Controller() {
+Controller::Controller():
+        odo_{0,0,0,0,0,0},
+        distance_travelled_(0),
+        time_travelled_(0),
+        cmd_pipe_seq_(0){
     // Set all attributes to default values
-    std::cout<<"Controller default constructor"<<std::endl;
+    pfmsConnectorPtr_ = std::make_unique<PfmsConnector>();
+    goal_.time=0;
+    goal_.distance=0;
 }
 
 void Controller::run(void) {
     // Implement this function
     std::cout<<"Controller::run"<<std::endl;
+    for (auto goal : goals_queue_){
+        std::cout<< "Reaching goal: " << goal.x << " " << goal.y << " " << goal.z << std::endl;
+        goal_.location = goal;
+        bool reachable = true;
+//        bool reachable = calcNewGoal();
+        if(! reachable){
+            std::cout << "Goal not reachable" << std::endl;
+            continue;
+        }
+        goal_.distance = distanceToGoal();
+        goal_.time = timeToGoal();
+
+        if(reachable){
+            std::cout<< "Reaching ...\n";
+            bool reached = reachGoal();
+        }
+    }
 }
 
 pfms::PlatformStatus Controller::status(void) {
@@ -17,64 +40,55 @@ pfms::PlatformStatus Controller::status(void) {
 }
 
 bool Controller::setGoals(std::vector<pfms::geometry_msgs::Point> goals) {
-    // Implement this function
-    std::cout<<"Controller::setGoals"<<std::endl;
+    // Store in Buffer
+    goals_queue_.clear();
+    for(auto points : goals){
+       goals_queue_.push_back(points);
+    }
+    std::cout << "Set " << goals_queue_.size() << " goals" << std::endl;
     return true;
 }
 
-bool Controller::checkOriginToDestination(pfms::nav_msgs::Odometry origin,
-                                          pfms::geometry_msgs::Point goal,
-                                          double& distance,
-                                          double& time,
-                                          pfms::nav_msgs::Odometry& estimatedGoalPose) {
-    // Implement this function
-    std::cout<<"Controller::checkOriginToDestination"<<std::endl;
-    return true;
-}
-
-// NEED OVERWRITE in ACKERMAN and QUADCOPTER
-pfms::PlatformType Controller::getPlatformType(void) {
-    // Implement this function
-    std::cout<<"Controller::getPlatformType"<<std::endl;
-    return pfms::PlatformType::ACKERMAN;
-}
-
-// Can Implement in Controller
 double Controller::distanceToGoal(void) {
-    std::cout << "Controller::distanceToGoal" << std::endl;
-    return 0.0;
+    return goal_.distance;
 
 }
 
-// Not sure
 double Controller::timeToGoal(void) {
-    std::cout << "Controller::timeToGoal" << std::endl;
-    return 0.0;
+    return goal_.time;
 }
 
 // Can Implement in Controller
 bool Controller::setTolerance(double tolerance) {
-    std::cout << "Controller::setTolerance" << std::endl;
+    tolerance_ = tolerance;
     return true;
 }
 
-// Can Implement in Controller
 double Controller::distanceTravelled(void) {
-    std::cout << "Controller::distanceTravelled" << std::endl;
-    return 0.0;
+    return distance_travelled_;
 }
 
-// Can Implement in Controller
 double Controller::timeTravelled(void) {
-    std::cout << "Controller::timeTravelled" << std::endl;
-    return 0.0;
+    return time_travelled_;
 }
 
-// Can Implement in Controller
-pfms::nav_msgs::Odometry Controller::getOdometry(void) {
-    std::cout << "Controller::getOdometry" << std::endl;
-    return pfms::nav_msgs::Odometry();
+bool Controller::goalReached() {
+    double dx = goal_.location.x - odo_.position.x;
+    double dy = goal_.location.y - odo_.position.y;
+
+    return (pow(pow(dx,2)+pow(dy,2),0.5) < tolerance_);
 }
+
+
+pfms::nav_msgs::Odometry Controller::getOdometry(void) {
+    pfmsConnectorPtr_->read(odo_,type_);
+    return odo_;
+}
+
+pfms::PlatformType Controller::getPlatformType(void){
+    return type_;
+}
+
 
 // Can Implement in Controller
 std::vector<pfms::geometry_msgs::Point> Controller::getObstacles() {
