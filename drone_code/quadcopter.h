@@ -24,6 +24,9 @@ public:
 
  //pfms::PlatformType getPlatformType(void);
 
+protected:
+//    bool goalReached();
+
 private:
 
   /// \brief timeLapsed

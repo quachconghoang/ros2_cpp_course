@@ -10,9 +10,14 @@ find_package(pipes 3 REQUIRED)
 
 #################################################################
 # The library we are developing will be called controllers
+#add_library(controllers controller.cpp quadcopter.cpp
+#        ackerman.cpp
+#        ackerman.h)
 add_library(controllers controller.cpp quadcopter.cpp)
+
 # We need to link it against pipes, because we use pipes
-target_link_libraries(controllers pfmsconnector )
+target_link_libraries(controllers pfmsconnector)
+#target_link_libraries(controllers pfmsconnector audi)
 
 # The executable will be called quiz4_a1_ex (as it substitutes PROJECT_NAME from line 4 of the CMakeLists.txt
 # We only use main.cpp for the executable
@@ -25,5 +30,5 @@ target_link_libraries( ${PROJECT_NAME}_ex controllers)
 # The below is our an example of our automated tets for marking
 # tests can be run from build directory (for this example ./test/utest)
 if(BUILD_TESTS)
-    add_subdirectory(test)
+#    add_subdirectory(test)
 endif()

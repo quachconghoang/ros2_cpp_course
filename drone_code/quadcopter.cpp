@@ -74,6 +74,13 @@ void Quadcopter::sendCmd(double turn_l_r, double move_l_r, double move_u_d, doub
     pfmsConnectorPtr_->send(cmd);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));//Small delay to ensure message sent
 }
+//
+//bool Quadcopter::goalReached() {
+//    getOdometry(); //This will update internal copy of odometry, as well as return value if needed.
+//    double dx = goal_.location.x - odo_.position.x;
+//    double dy = goal_.location.y - odo_.position.y;
+//    return (std::hypot(dx, dy) < tolerance_);
+//}
 
 bool Quadcopter::reachGoal(void) {
 

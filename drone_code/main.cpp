@@ -13,37 +13,41 @@ int main() {
 
     std::vector<pfms::geometry_msgs::Point> points;
 
-    int num_points;
-    std::cout << "Number of goals? ";
-    std::cin >> num_points;
-    points.reserve(num_points);
+//    int num_points;
+//    std::cout << "Number of goals? ";
+//    std::cin >> num_points;
+//    points.reserve(num_points);
+//
+//    for (int i = 0; i < num_points; i++) {
+//        pfms::geometry_msgs::Point pt;
+//        std::cout << "Goal " << i << " x? ";
+//        std::cin >> pt.x;
+//        std::cout << "Goal " << i << " y? ";
+//        std::cin >> pt.y;
+//        std::cout << "Goal " << i << " z? ";
+//        std::cin >> pt.z;
+//        points.push_back(pt);
+//    }
 
-    for (int i = 0; i < num_points; i++) {
-        pfms::geometry_msgs::Point pt;
-        std::cout << "Goal " << i << " x? ";
-        std::cin >> pt.x;
-        std::cout << "Goal " << i << " y? ";
-        std::cin >> pt.y;
-        std::cout << "Goal " << i << " z? ";
-        std::cin >> pt.z;
-        points.push_back(pt);
-    }
+    pfms::geometry_msgs::Point pt0{0, 0, 5};
+    pfms::geometry_msgs::Point pt1{5, 5, 5};
+    pfms::geometry_msgs::Point pt2{0, 5, 5};
+    points.push_back(pt0);
+    points.push_back(pt1);
+    points.push_back(pt2);
 
     //Set-up the controllers
     std::vector<ControllerInterface*> controllers;
 //    controllers.push_back(new Ackerman());
     controllers.push_back(new Quadcopter());
-
     //Setting tolerance to reach goals
     controllers.at(0)->setTolerance(0.2);
-
     //Setting goals
     controllers.at(0)->setGoals(points);
     // Call Run function
     controllers.at(0)->run();
 
-
-    for (auto pt : points) {
+//    for (auto pt : points) {
 //        bool reachable = controllers.at(0)->setGoal(pt);
 //        double dist = controllers.at(0)->distanceToGoal();
 //        double t = controllers.at(0)->timeToGoal();
@@ -53,8 +57,8 @@ int main() {
 //            bool reached = controllers.at(0)->reachGoal();
 //        }
 
-        std::cout << "Controller: TOTAL distance travelled: " <<
-                    controllers.at(0)->distanceTravelled() << "[m] " <<
-                     " time travelled: " << controllers.at(0)->timeTravelled()  << "[s]" << std::endl;
-    }
+//        std::cout << "Controller: TOTAL distance travelled: " <<
+//                    controllers.at(0)->distanceTravelled() << "[m] " <<
+//                     " time travelled: " << controllers.at(0)->timeTravelled()  << "[s]" << std::endl;
+//    }
 }

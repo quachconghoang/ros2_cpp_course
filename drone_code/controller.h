@@ -31,7 +31,7 @@ public:
   /**
    * Default Controller constructor, sets odometry and metrics to initial 0
    */
-  Controller();
+    Controller();
 
   /**
    * Instructs the underlying platform to recalcuate a goal, and set any internal variables as needed
@@ -39,18 +39,18 @@ public:
    * Called when goal or tolerance changes
    * @return Whether goal is reachable by the platform
    */
-  virtual bool calcNewGoal() = 0;
+    virtual bool calcNewGoal() = 0;
 
   //ControllerInterface functions (all doxygen comments in the files)
-  bool setGoal(pfms::geometry_msgs::Point goal);
+    bool setGoal(pfms::geometry_msgs::Point goal);
 
     // 1st Implements
     bool setGoals(std::vector<pfms::geometry_msgs::Point> goals);
 
-    // 2nd Reuse goal reached
+    // 2nd Reuse goal reached - override in Vehicle CLASS (3D for drone and 2D for car - or including the 3D pose for car as well)
 
-    // 3rd Implements the run function
-    void run(void);
+    // 3rd Implements the run function in Vehicle CLASS
+//    void run(void);
 
     // 4th Implements the status function
     pfms::PlatformStatus status(void);
@@ -93,7 +93,8 @@ protected:
    */
   bool goalReached();
 
-
+    std::vector<GoalStats> goals_raw; //!< The goals to reach
+    std::vector<GoalStats> goals_optimizes; //!< The goals with optimized path
 
   std::unique_ptr<PfmsConnector> pfmsConnectorPtr_; //!< The pipe to communicate
   pfms::nav_msgs::Odometry odo_;//!< The current pose of platform
