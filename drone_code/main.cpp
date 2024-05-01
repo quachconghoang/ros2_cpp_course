@@ -37,18 +37,24 @@ int main() {
     //Setting tolerance to reach goals
     controllers.at(0)->setTolerance(0.2);
 
+    //Setting goals
+    controllers.at(0)->setGoals(points);
+    // Call Run function
+    controllers.at(0)->run();
+
+
     for (auto pt : points) {
-        bool reachable = controllers.at(0)->setGoal(pt);
-        double dist = controllers.at(0)->distanceToGoal();
-        double t = controllers.at(0)->timeToGoal();
-        std::cout << "Controller: can reach goal " <<
-                             dist << "[m] " << t << "[s]" << std::endl;
-        if(reachable){
-            bool reached = controllers.at(0)->reachGoal();
-        }
+//        bool reachable = controllers.at(0)->setGoal(pt);
+//        double dist = controllers.at(0)->distanceToGoal();
+//        double t = controllers.at(0)->timeToGoal();
+//        std::cout << "Controller: can reach goal " <<
+//                             dist << "[m] " << t << "[s]" << std::endl;
+//        if(reachable){
+//            bool reached = controllers.at(0)->reachGoal();
+//        }
 
         std::cout << "Controller: TOTAL distance travelled: " <<
                     controllers.at(0)->distanceTravelled() << "[m] " <<
-                     " time travelled: " << controllers.at(0)->timeInMotion()  << "[s]" << std::endl;
+                     " time travelled: " << controllers.at(0)->timeTravelled()  << "[s]" << std::endl;
     }
 }

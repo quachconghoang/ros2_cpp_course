@@ -44,13 +44,32 @@ public:
   //ControllerInterface functions (all doxygen comments in the files)
   bool setGoal(pfms::geometry_msgs::Point goal);
 
+    // 1st Implements
+    bool setGoals(std::vector<pfms::geometry_msgs::Point> goals);
+
+    // 2nd Reuse goal reached
+
+    // 3rd Implements the run function
+    void run(void);
+
+    // 4th Implements the status function
+    pfms::PlatformStatus status(void);
+
+    // 5th Implements the getObstacles function
+    std::vector<pfms::geometry_msgs::Point> getObstacles(void);
+
+
+
+
+
+
   pfms::PlatformType getPlatformType(void);
 
   bool setTolerance(double tolerance);
 
   double distanceTravelled(void);
 
-  double timeInMotion(void);
+  double timeTravelled(void);
 
   double distanceToGoal(void);
 

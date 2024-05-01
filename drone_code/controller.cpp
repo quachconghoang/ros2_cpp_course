@@ -29,6 +29,13 @@ bool Controller::setGoal(pfms::geometry_msgs::Point goal) {
   return calcNewGoal();
 }
 
+bool Controller::setGoals(std::vector<pfms::geometry_msgs::Point> goals)
+{
+    // Store in Buffer
+
+
+    return 0;
+}
 bool Controller::setTolerance(double tolerance) {
   tolerance_ = tolerance;
   return true;
@@ -43,7 +50,7 @@ double Controller::timeToGoal(void) {
 double Controller::distanceTravelled(void) {
     return distance_travelled_;
 }
-double Controller::timeInMotion(void) {
+double Controller::timeTravelled(void) {
     return time_travelled_;
 }
 
@@ -63,3 +70,42 @@ pfms::nav_msgs::Odometry Controller::getOdometry(void){
 pfms::PlatformType Controller::getPlatformType(void){
     return type_;
 }
+
+// new functions implementation
+// Run function implementation
+void Controller::run(void){
+//    // Get the current odometry
+//    pfms::nav_msgs::Odometry current_odometry = getOdometry();
+//
+//    // Check if the goal has been reached
+//    if(goalReached()){
+//        // If the goal has been reached, we need to calculate a new goal
+//        calcNewGoal();
+//    }
+//
+//    // Calculate the distance travelled
+//    double dx = current_odometry.position.x - odo_.position.x;
+//    double dy = current_odometry.position.y - odo_.position.y;
+//    double distance = pow(pow(dx,2)+pow(dy,2),0.5);
+//
+//    // Update the distance travelled
+//    distance_travelled_ += distance;
+//
+//    // Update the time travelled
+//    time_travelled_ += 0.1;
+}
+
+// Status function implementation
+pfms::PlatformStatus Controller::status(void){
+    // Get the current odometry
+    pfms::PlatformStatus status;
+
+    return status;
+}
+
+std::vector<pfms::geometry_msgs::Point> Controller::getObstacles(void){
+    std::vector<pfms::geometry_msgs::Point> obstacles;
+    return obstacles;
+
+}
+

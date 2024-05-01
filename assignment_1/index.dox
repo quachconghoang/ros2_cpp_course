@@ -1,0 +1,58 @@
+/*!
+
+*/
+
+// without this gap between two doxygen definition, the last group does not get
+// populated properly for some reason.
+
+/*!
+@mainpage Assignment 1: Driving Audi R8 and Husky Platforms
+
+Uses a physics simulator gazebo (from ROS2) to demostrate driving of audi r8 and 
+husky platforms via ackerman and skidsteer driving control respectivly.
+
+The program carries out a mission to drive and stop at a number of goals within specified tolerance. 
+It takes in goals with x,y, coordinates then steers the two platforms. 
+As each platform has different characteristics in steering control, a specific class for the corresponding platform is used for control.
+
+Class dependences:
+
+-missioninterface Interface class, implement its virtual functions without changing the function declarations
+
+    --↳mission Base Class, inherits from missioninterface, Carrys out mission to drive to goals within specified tolerance and shortest travel distance.
+
+-controllerinterface Interface Class, implement its virtual functions without changing the function declarations
+
+    --↳controller Base Class, inherits from missioninterface.
+
+        ---↳ackerman Class, derives and inherits from controller.  reports if it can reach goal and Controls the Audi R8
+
+        ---↳skidsteer Class, derives and inherits from controller. reports if it can reach goal and Controls the Husky
+
+
+This program requires the installtion of Pipes 3.0.2:
+\verbatim
+sudo apt install ./packages/pipes_3.0.2-humble_amd64.deb
+\endverbatim
+
+Running the Simulator:
+You will need to launch the simulator before your running the code that sends commands or receives data from the simulator to visulise the Audi and Husky.
+\verbatim
+ros2 launch gazebo_tf audi_husky.launch.py
+\endverbatim
+
+Execute below command between your unit tests:
+\verbatim
+ros2 service call /reset_world std_srvs/srv/Empty
+\endverbatim
+
+This is the landing page of your doxygen documentation.
+
+You should note what the code does, how it should be run and what to expect when running it.
+Include small images (<20kB, compress them and shrink)
+
+Look at our other example of a dox file in week04.
+
+
+
+*/

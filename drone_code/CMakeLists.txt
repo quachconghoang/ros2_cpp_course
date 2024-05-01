@@ -6,7 +6,7 @@ project (quiz4_a1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 set(BUILD_TESTS ON) # This switch here sets the tests ON automatically
 
-find_package(pipes 3.0.4 REQUIRED)
+find_package(pipes 3 REQUIRED)
 
 #################################################################
 # The library we are developing will be called controllers

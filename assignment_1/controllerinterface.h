@@ -10,10 +10,10 @@
  *  This interface class is used to set all the methods that need to be embodies within any subsequent derived autonomous vehicle controller classes.
  *  The methods noted in interface class are the only methods that will be visible and used for testing the implementation of your code.
  *  \author    Alen Alempijevic
- *  \version   1.01-2
- *  \date      2022-04-15
+ *  \version   1.01-1
+ *  \date      2023-03-08
  *  \pre       none
- *  \bug       none reported as of 2022-04-15
+ *  \bug       none reported as of 2023-03-08
  *  \warning   students MUST NOT change this class (the header file)
  */
 
@@ -22,27 +22,18 @@ class ControllerInterface
 public:
   ControllerInterface(){};
 
+  /**
+  Reach reach goal - execute control to reach goal, blocking call until goal reached or abandoned
+  @return goal reached (true - goal reached, false - goal abandoned : not reached)
+  */
+  virtual bool reachGoal(void) = 0;
 
   /**
-  Run controller in reaching goals - non blocking call
+  Setter for goal, the function will update internal variables asscoiated with @sa timeToGoal
+  and @sa distanceToGoal
+  @return goal reachable
   */
-  virtual void run(void) = 0;
-
-
-  /**
-  Retrurns platform status (indicating if it is executing a series of goals or idle - waiting for goals)
-  @return platform status
-  */
-  virtual pfms::PlatformStatus status(void) = 0;
-
-
-  /**
-  Setter for goals
-  @param goals
-  @return all goal reachable, in order supplied
-  */
-  virtual bool setGoals(std::vector<pfms::geometry_msgs::Point> goals) = 0;
-
+  virtual bool setGoal(pfms::geometry_msgs::Point goal) = 0;
 
   /**
   Checks whether the platform can travel between origin and destination
@@ -66,14 +57,14 @@ public:
   virtual pfms::PlatformType getPlatformType(void) = 0;
 
   /**
-  Getter for distance to be travelled to reach current goal
-  @return distance to be travlled to reach current goal [m]
+  Getter for distance to be travelled to reach goal, updates at the platform moves to current goal
+  @return distance to be travlled to goal [m]
   */
   virtual double distanceToGoal(void) = 0;
 
   /**
-  Getter for time to reach current goal
-  @return time to travel to current goal [s]
+  Getter for time to reach goal, updates at the platform moves to current goal
+  @return time to travel to SkidSteerGoal [s]
   */
   virtual double timeToGoal(void) = 0;
 
@@ -84,32 +75,22 @@ public:
   virtual bool setTolerance(double tolerance) = 0;
 
   /**
-  returns distance travelled by platform
-  @return total distance travelled since execution @sa run called with goals supplied
+  returns total distance travelled by platform
+  @return total distance travelled since started [m]
   */
-  virtual double distanceTravelled(void) = 0;
+  virtual double platformDistanceTravelled(void) = 0;
 
   /**
-  returns total time in motion by platform
-  @return total time in motion since execution @sa run called with goals supplied
+  returns total time in motion by platform, time when stationary not included
+  @return total time in motion since started [s]
   */
-  virtual double timeTravelled(void) = 0;
+  virtual double timeInMotion(void) = 0;
 
   /**
   returns current odometry information
-  @return odometry - current odometry
+  @return odometry - current pose (x,y,yaw) and velocity (vx,vy)
   */
   virtual pfms::nav_msgs::Odometry getOdometry(void) = 0;
-
-  /**
-  Getter for obstacles detected (only in SUPER mode), otherwise return empty vector
-  @param goals
-  @return centre of obstacles detected
-  */
-  virtual std::vector<pfms::geometry_msgs::Point> getObstacles(void) = 0;
-
-
-
 
 };
 
