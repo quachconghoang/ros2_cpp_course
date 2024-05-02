@@ -18,16 +18,13 @@ Controller::Controller():
 Controller::~Controller() {
     pfmsConnectorPtr_.reset();
 //    running_=false;
-//    set_Goals_Thread_->join();
     reach_Goals_Thread_->join();
-//    delete set_Goals_Thread_;
     delete reach_Goals_Thread_;
 
 }
 
 void Controller::run(void) {
     // Implement this function
-    std::cout<<"Controller::run By thread ?!"<<std::endl;
     reach_Goals_Thread_ = new std::thread(&Controller::reachGoalsQueue, this);
 //    reachGoalsQueue();
 }
@@ -51,7 +48,11 @@ unsigned int Controller::checkGoalsProgress() {
 void Controller::reachGoalsQueue() {
     while (goal_index_ < goals_queue_.size()) {
         auto goal = goals_queue_.at(goal_index_);
-        std::cout<< "Reaching goal: " << goal.x << " " << goal.y << " " << goal.z << std::endl;
+
+        std::string name = "ACKERMAN";
+        if(type_ == pfms::PlatformType::QUADCOPTER) name = "QUADCOPTER";
+
+        std::cout<< name << "reaching goal: " << goal.x << " " << goal.y << " " << goal.z << std::endl;
         goal_.location = goal;
         bool reachable = calcNewGoal();
         if(! reachable){
@@ -59,8 +60,8 @@ void Controller::reachGoalsQueue() {
             cout << "This goal not reachable, skip, " << checkGoalsProgress()  << "%"  << endl;
             continue;
         }
-        goal_.distance = distanceToGoal();
-        goal_.time = timeToGoal();
+//        goal_.distance = distanceToGoal();
+//        goal_.time = timeToGoal();
         if(reachable){
             cout<< "Reaching a reachable goal ...\n";
             bool reached = reachGoal();

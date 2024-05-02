@@ -38,13 +38,13 @@ int main(int argc, char *argv[]) {
 
     std::vector<ControllerInterface*> controllers;
     controllers.push_back(new Quadcopter());
-//    controllers.push_back(new Ackerman());
+    controllers.push_back(new Ackerman());
     controllers.front()->setTolerance(0.5);
 
     Mission mission(controllers);
     mission.setMissionObjective(objective);
     mission.setGoals(quadcopterPoints,pfms::QUADCOPTER);
-//    mission.setGoals(ackermanPoints,pfms::ACKERMAN);
+    mission.setGoals(ackermanPoints,pfms::ACKERMAN);
 
     mission.run();
 

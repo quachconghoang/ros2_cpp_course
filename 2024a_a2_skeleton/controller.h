@@ -18,6 +18,8 @@ struct GoalStats {
     double distance;
     //! time to goal
     double time;
+    //! estimated pose at goal
+    pfms::nav_msgs::Odometry estimated_pose;
 };
 
 class Controller: public ControllerInterface
