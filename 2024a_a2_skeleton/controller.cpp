@@ -73,8 +73,11 @@ void Controller::reachGoalsQueue() {
 }
 
 pfms::PlatformStatus Controller::status(void) {
-    // Implement this function
-    return pfms::PlatformStatus::IDLE;
+    pfms::PlatformStatus status;
+    if (checkGoalsProgress()==100) {
+        status = pfms::PlatformStatus::IDLE;
+    }
+    return status;
 }
 
 bool Controller::setGoals(std::vector<pfms::geometry_msgs::Point> goals) {
